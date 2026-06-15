@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'core/injector/injector.dart';
 import 'core/routes/app_router.dart';
 import 'core/theme/app_colors.dart';
 
 void main() {
+  setupInjector();
   runApp(const ReplayKidsApp());
 }
 

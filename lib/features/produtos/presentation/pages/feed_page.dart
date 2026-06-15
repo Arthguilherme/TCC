@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import 'package:go_router/go_router.dart';
+import 'package:replaykids/core/routes/app_router.dart';
+import 'package:replaykids/core/theme/app_colors.dart';
 
 class FeedPage extends StatelessWidget {
   const FeedPage({super.key});
@@ -13,17 +15,8 @@ class FeedPage extends StatelessWidget {
         elevation: 0,
         title: const Text(
           'ReplayKids',
-          style: TextStyle(
-            color: AppColors.c900,
-            fontWeight: FontWeight.w700,
-          ),
+          style: TextStyle(color: AppColors.c900, fontWeight: FontWeight.w700),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: AppColors.c700),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: const Center(
         child: Column(
@@ -33,19 +26,22 @@ class FeedPage extends StatelessWidget {
             SizedBox(height: 16),
             Text(
               'Login realizado com sucesso!',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: AppColors.c800,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 8),
             Text(
-              'Feed de produtos em breve.',
+              'Feed em construção.',
               style: TextStyle(color: AppColors.neutral500),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.go(AppRouter.publicar),
+        backgroundColor: AppColors.c500,
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.add),
+        label: const Text('Publicar anúncio'),
       ),
     );
   }

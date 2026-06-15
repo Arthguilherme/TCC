@@ -4,6 +4,7 @@ import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/fazer_login_usecase.dart';
 import '../../features/auth/presentation/controllers/login_controller.dart';
+import '../../features/anuncio/presentation/controllers/publish_controller.dart';
 
 final injector = AutoInjector();
 
@@ -19,6 +20,9 @@ void setupInjector() {
 
   // Controller
   injector.add(LoginController.new);
+
+  // Anúncio — Singleton para compartilhar entre os 3 steps
+  injector.addSingleton(PublishController.new);
 
   injector.commit();
 }

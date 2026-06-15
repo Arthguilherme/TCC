@@ -1,14 +1,11 @@
-import 'package:go_router/go_router.dart';
-import '../../../../core/routes/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:signals_flutter/signals_flutter.dart';
+import '../../../../core/injector/injector.dart';
+import '../../../../core/routes/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/labeled_field.dart';
-import '../../data/datasources/auth_datasource.dart';
-import '../../data/repositories/auth_repository_impl.dart';
-import '../../domain/usecases/fazer_login_usecase.dart';
 import '../controllers/login_controller.dart';
-import 'signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,14 +19,8 @@ class _LoginPageState extends State<LoginPage> {
   final _senhaController = TextEditingController();
   bool _senhaVisivel = false;
 
-  // Montagem manual das dependências (por enquanto, sem auto_injector)
-  late final LoginController _loginController = LoginController(
-    fazerLoginUsecase: FazerLoginUsecase(
-      repository: AuthRepositoryImpl(
-        datasource: AuthDatasourceMock(),
-      ),
-    ),
-  );
+  // Uma linha só — o injector monta toda a cadeia automaticamente
+  final _loginController = injector.get<LoginController>();
 
   @override
   void dispose() {
@@ -39,15 +30,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _handleLogin() async {
-  await _loginController.login(
-    _emailController.text.trim(),
-    _senhaController.text,
-  );
+    await _loginController.login(
+      _emailController.text.trim(),
+      _senhaController.text,
+    );
 
-  if (_loginController.status.value == LoginStatus.sucesso && mounted) {
-    context.go(AppRouter.feed);
+    if (_loginController.status.value == LoginStatus.sucesso && mounted) {
+      context.go(AppRouter.feed);
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +50,6 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Logo
               Container(
                 width: 56,
                 height: 56,
@@ -81,11 +71,7 @@ class _LoginPageState extends State<LoginPage> {
 
               const Text(
                 'Bem-vindo de volta',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w600,
-                  height: 1.15,
-                ),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, height: 1.15),
               ),
               const SizedBox(height: 12),
               const Text(
@@ -117,16 +103,13 @@ class _LoginPageState extends State<LoginPage> {
                     size: 20,
                   ),
                   onPressed: () {
-                    setState(() {
-                      _senhaVisivel = !_senhaVisivel;
-                    });
+                    setState(() => _senhaVisivel = !_senhaVisivel);
                   },
                 ),
               ),
 
               const SizedBox(height: 8),
 
-              // Mensagem de erro (reativa)
               Watch((context) {
                 final erro = _loginController.mensagemErro.value;
                 if (erro == null) return const SizedBox.shrink();
@@ -141,11 +124,8 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 16),
 
-              // Botão entrar (reativo ao loading)
               Watch((context) {
-                final status = _loginController.status.value;
-                final carregando = status == LoginStatus.carregando;
-
+                final carregando = _loginController.status.value == LoginStatus.carregando;
                 return SizedBox(
                   height: 48,
                   width: double.infinity,
@@ -180,9 +160,7 @@ class _LoginPageState extends State<LoginPage> {
 
               Center(
                 child: GestureDetector(
-                  onTap: () {
-                    context.go(AppRouter.cadastro);
-                  },
+                  onTap: () => context.go(AppRouter.cadastro),
                   child: RichText(
                     text: const TextSpan(
                       text: 'Não tem conta? ',
