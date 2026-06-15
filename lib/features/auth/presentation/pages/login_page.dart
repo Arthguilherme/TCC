@@ -1,3 +1,5 @@
+import 'package:go_router/go_router.dart';
+import '../../../../core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -37,22 +39,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _handleLogin() async {
-    await _loginController.login(
-      _emailController.text.trim(),
-      _senhaController.text,
-    );
+  await _loginController.login(
+    _emailController.text.trim(),
+    _senhaController.text,
+  );
 
-    if (_loginController.status.value == LoginStatus.sucesso && mounted) {
-      // Por enquanto, mostra um SnackBar de sucesso.
-      // No próximo passo vamos navegar para a Feed.
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Bem-vindo, ${_loginController.usuarioLogado.value?.nome}!'),
-          backgroundColor: AppColors.c600,
-        ),
-      );
-    }
+  if (_loginController.status.value == LoginStatus.sucesso && mounted) {
+    context.go(AppRouter.feed);
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -186,10 +181,7 @@ class _LoginPageState extends State<LoginPage> {
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SignupPage()),
-                    );
+                    context.go(AppRouter.cadastro);
                   },
                   child: RichText(
                     text: const TextSpan(

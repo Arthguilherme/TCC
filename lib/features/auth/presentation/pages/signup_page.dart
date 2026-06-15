@@ -1,3 +1,5 @@
+import 'package:go_router/go_router.dart';
+import '../../../../core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/labeled_field.dart';
@@ -49,7 +51,7 @@ class _SignupPageState extends State<SignupPage> {
             children: [
               // Botão voltar
               InkWell(
-                onTap: () => Navigator.maybePop(context),
+                onTap: () => context.go(AppRouter.login),
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   width: 36,
