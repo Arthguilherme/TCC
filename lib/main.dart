@@ -26,6 +26,6 @@ class ReplayKidsApp extends StatelessWidget {
           secondary: AppColors.c300,
         ),
       ),
-    );
+    );  
   }
 }

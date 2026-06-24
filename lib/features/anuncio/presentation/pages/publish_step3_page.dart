@@ -25,15 +25,19 @@ class PublishStep3Page extends StatelessWidget {
       primaryLabel: 'Publicar agora',
       primaryIcon: Icons.check,
       onPrimary: () {
-        controller.resetar();
+        controller.publicar(); 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Anúncio publicado com sucesso!'),
-            backgroundColor: AppColors.c600,
+
+        const SnackBar(
+          content: Text('Anúncio publicado com sucesso!'),
+          backgroundColor: AppColors.c600,
           ),
+
         );
+
         context.go(AppRouter.feed);
       },
+      
       body: Builder(builder: (context) {
         final titulo =
             controller.titulo.isEmpty ? 'Sem título' : controller.titulo;
@@ -49,7 +53,6 @@ class PublishStep3Page extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Preview do produto
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -59,7 +62,6 @@ class PublishStep3Page extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Imagem placeholder
                   Container(
                     height: 140,
                     decoration: const BoxDecoration(

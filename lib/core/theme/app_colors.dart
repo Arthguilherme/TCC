@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Paleta Sage (versão 1 - mais saturada)
   static const c50  = Color(0xFFF1F7F2);
   static const c100 = Color(0xFFDDEBDF);
   static const c200 = Color(0xFFBCD7C1);
@@ -13,7 +12,6 @@ class AppColors {
   static const c800 = Color(0xFF2B4434);
   static const c900 = Color(0xFF1F3327);
 
-  // Paleta Neutra (cinzas)
   static const neutral50  = Color(0xFFFAFAFA);
   static const neutral100 = Color(0xFFF5F5F5);
   static const neutral200 = Color(0xFFE5E5E5);

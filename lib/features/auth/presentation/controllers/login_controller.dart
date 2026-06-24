@@ -9,7 +9,6 @@ class LoginController {
 
   LoginController({required this.fazerLoginUsecase});
 
-  // Signals: estado observável pela UI
   final status = signal(LoginStatus.inicial);
   final mensagemErro = signal<String?>(null);
   final usuarioLogado = signal<UsuarioEntity?>(null);

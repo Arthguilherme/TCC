@@ -6,7 +6,6 @@ abstract class AuthDatasource {
 }
 
 class AuthDatasourceMock implements AuthDatasource {
-  // "Banco de dados" fake em memória
   final List<UsuarioModel> _usuarios = [
     const UsuarioModel(
       id: 1,
@@ -20,7 +19,6 @@ class AuthDatasourceMock implements AuthDatasource {
 
   @override
   Future<UsuarioModel> login(String email, String senha) async {
-    // Simula delay de rede
     await Future.delayed(const Duration(seconds: 1));
 
     final usuario = _usuarios.firstWhere(

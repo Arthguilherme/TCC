@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:replaykids/core/theme/app_colors.dart';
 
-/// Helper compartilhado pelas 3 telas de publicação
 Widget buildPublishScaffold({
   required BuildContext context,
   required String step,
@@ -20,7 +19,6 @@ Widget buildPublishScaffold({
     body: SafeArea(
       child: Column(
         children: [
-          // Header
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
             child: Row(
@@ -46,7 +44,6 @@ Widget buildPublishScaffold({
             ),
           ),
 
-          // Barra de progresso
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: ClipRRect(
@@ -62,7 +59,6 @@ Widget buildPublishScaffold({
 
           const SizedBox(height: 12),
 
-          // Conteúdo principal com scroll
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -70,7 +66,6 @@ Widget buildPublishScaffold({
             ),
           ),
 
-          // Botões de navegação
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
             child: Row(
@@ -120,7 +115,6 @@ Widget buildPublishScaffold({
   );
 }
 
-/// Label de seção
 class SectionLabel extends StatelessWidget {
   final String text;
   const SectionLabel(this.text, {super.key});
@@ -141,7 +135,6 @@ class SectionLabel extends StatelessWidget {
   }
 }
 
-/// Chip selecionável
 class SelectChip extends StatelessWidget {
   final String label;
   final bool selected;

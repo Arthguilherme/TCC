@@ -19,7 +19,6 @@ class _LoginPageState extends State<LoginPage> {
   final _senhaController = TextEditingController();
   bool _senhaVisivel = false;
 
-  // Uma linha só — o injector monta toda a cadeia automaticamente
   final _loginController = injector.get<LoginController>();
 
   @override

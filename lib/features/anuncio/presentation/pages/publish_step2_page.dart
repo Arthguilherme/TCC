@@ -65,7 +65,6 @@ class _PublishStep2PageState extends State<PublishStep2Page> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Categoria
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -79,7 +78,6 @@ class _PublishStep2PageState extends State<PublishStep2Page> {
           ),
           const SizedBox(height: 16),
 
-// Faixa etária
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -114,7 +112,6 @@ class _PublishStep2PageState extends State<PublishStep2Page> {
           ),
           const SizedBox(height: 16),
 
-// Tipo de oferta
           Row(
             children: [
               Expanded(
@@ -140,7 +137,6 @@ class _PublishStep2PageState extends State<PublishStep2Page> {
           ),
           const SizedBox(height: 16),
 
-            // Preço
           if (_controller.isVenda) ...[
             const SectionLabel('Preço'),
             TextField(

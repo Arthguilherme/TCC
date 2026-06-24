@@ -10,7 +10,6 @@ class UsuarioModel extends UsuarioEntity {
     super.cidade,
   });
 
-  // JSON → UsuarioModel
   factory UsuarioModel.fromJson(Map<String, dynamic> json) {
     return UsuarioModel(
       id: json['id'],
@@ -22,7 +21,6 @@ class UsuarioModel extends UsuarioEntity {
     );
   }
 
-  // UsuarioModel → JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
