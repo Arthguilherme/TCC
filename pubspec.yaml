@@ -25,6 +25,8 @@ dependencies:
   # Gerência de estado
   signals_flutter: ^5.0.0
 
+  image_picker: ^1.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
