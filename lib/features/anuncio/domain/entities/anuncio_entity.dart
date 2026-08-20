@@ -7,8 +7,9 @@ class AnuncioEntity {
   final String faixaEtaria;
   final bool isVenda;
   final String preco;
+  final List<String> fotos;
 
-  const AnuncioEntity({
+AnuncioEntity({
     required this.id,
     required this.titulo,
     required this.descricao,
@@ -17,5 +18,6 @@ class AnuncioEntity {
     required this.faixaEtaria,
     required this.isVenda,
     required this.preco,
+    this.fotos = const [],
   });
 }

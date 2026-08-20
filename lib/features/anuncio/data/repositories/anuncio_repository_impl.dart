@@ -21,6 +21,7 @@ class AnuncioRepositoryImpl implements AnuncioRepository {
         faixaEtaria: anuncio.faixaEtaria,
         isVenda: anuncio.isVenda,
         preco: anuncio.preco,
+        fotos: anuncio.fotos,
       ),
     );
   }

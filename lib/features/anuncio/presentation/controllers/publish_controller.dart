@@ -1,7 +1,7 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:replaykids/features/anuncio/domain/entities/anuncio_entity.dart';
 import 'package:replaykids/features/anuncio/domain/repositories/anuncio_repository.dart';
-
+import 'package:flutter/foundation.dart';
 class PublishController {
   final AnuncioRepository repository;
 
@@ -29,7 +29,7 @@ Future<void> adicionarFoto(ImageSource source) async {
 
   if (foto != null){
     fotos = [...fotos, foto];
-  }
+    }
 }
 
 void removerFoto(int index) {
@@ -47,6 +47,7 @@ void removerFoto(int index) {
         faixaEtaria: faixaEtaria,
         isVenda: isVenda,
         preco: preco,
+        fotos: fotos.map((f) => f.path).toList(),
       ),
     );
     resetar();
@@ -56,10 +57,10 @@ void removerFoto(int index) {
     titulo = '';
     descricao = '';
     condicao = 'Novo';
+    fotos = [];
     categoria = 'Brinquedos';
     faixaEtaria = '1-2 anos';
     isVenda = true;
     preco = '45,00';
   }
-
 }

@@ -1,5 +1,6 @@
-import 'package:signals_flutter/signals_flutter.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:replaykids/core/injector/injector.dart';
 import 'package:replaykids/core/theme/app_colors.dart';
 import 'package:replaykids/core/widgets/labeled_field.dart';
@@ -28,6 +29,53 @@ class _PublishStep1PageState extends State<PublishStep1Page> {
     super.dispose();
   }
 
+    void _mostrarOpcoesFoto() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.neutral200,
+                borderRadius: BorderRadius.circular(99),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined,
+                  color: AppColors.c600),
+              title: const Text('Escolher da galeria'),
+              onTap: () async {
+                Navigator.pop(context);
+                await _controller.adicionarFoto(ImageSource.gallery);
+                setState(() {});
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt_outlined,
+                  color: AppColors.c600),
+              title: const Text('Tirar foto'),
+              onTap: () async {
+                Navigator.pop(context);
+                await _controller.adicionarFoto(ImageSource.camera);
+                setState(() {});
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return buildPublishScaffold(
@@ -52,14 +100,41 @@ class _PublishStep1PageState extends State<PublishStep1Page> {
           const SectionLabel('Fotos do item'),
           Row(
             children: [
-              Expanded(child: _PhotoSlot(addable: true, onTap: () {})),
-              const SizedBox(width: 8),
-              const Expanded(child: _PhotoSlot()),
-              const SizedBox(width: 8),
-              const Expanded(child: _PhotoSlot()),
+               ...List.generate(3, (i) {
+                final temFoto = i < _controller.fotos.length;
+                return Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: i < 2 ? 8 : 0),
+                    child: temFoto
+                        ? _FotoPreview(
+                            path: _controller.fotos[i].path,
+                            onRemover: () {
+                              _controller.removerFoto(i);
+                              setState(() {});
+                            },
+                          )
+                        : _PhotoSlot(
+                            addable: i == _controller.fotos.length,
+                            onTap: i == _controller.fotos.length
+                                ? _mostrarOpcoesFoto
+                                : null,
+                          ),
+                  ),
+                );
+              }),
             ],
           ),
+
+          const SizedBox(height: 6),
+          Text(
+            '${_controller.fotos.length}/3 fotos adicionadas',
+            style: const TextStyle( 
+              fontSize: 11,
+              color: AppColors.neutral400,
+            ),
+          ),
           const SizedBox(height: 18),
+
           const SectionLabel('Título'),
           LabeledField(
             label: '',
@@ -67,6 +142,7 @@ class _PublishStep1PageState extends State<PublishStep1Page> {
             controller: _tituloController,
           ),
           const SizedBox(height: 12),
+
           const SectionLabel('Descrição'),
           TextField(
             controller: _descricaoController,
@@ -88,6 +164,7 @@ class _PublishStep1PageState extends State<PublishStep1Page> {
             ),
           ),
           const SizedBox(height: 14),
+
           const SectionLabel('Condição'),
           Wrap(
             spacing: 8,
@@ -110,7 +187,6 @@ class _PublishStep1PageState extends State<PublishStep1Page> {
 class _PhotoSlot extends StatelessWidget {
   final bool addable;
   final VoidCallback? onTap;
-
   const _PhotoSlot({this.addable = false, this.onTap});
 
   @override
@@ -146,6 +222,49 @@ class _PhotoSlot extends StatelessWidget {
                 )
               : const Icon(Icons.image_outlined, color: AppColors.neutral300),
         ),
+      ),
+    );
+  }
+}
+
+class _FotoPreview extends StatelessWidget {
+  final String path;
+  final VoidCallback onRemover;
+  const _FotoPreview({required this.path, required this.onRemover});
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: Image.file(
+              File(path),
+              fit: BoxFit.cover,
+            ),
+          ),
+          // Botão remover
+          Positioned(
+            top: 4,
+            right: 4,
+            child: GestureDetector(
+              onTap: onRemover,
+              child: Container(
+                width: 22,
+                height: 22,
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.close,
+                    size: 14, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

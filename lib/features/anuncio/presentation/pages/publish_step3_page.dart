@@ -1,6 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:signals_flutter/signals_flutter.dart';
 import 'package:replaykids/core/injector/injector.dart';
 import 'package:replaykids/core/routes/app_router.dart';
 import 'package:replaykids/core/theme/app_colors.dart';
@@ -35,7 +35,7 @@ class PublishStep3Page extends StatelessWidget {
 
         );
 
-        context.go(AppRouter.feed);
+        Navigator.of(context).popUntil((route) => route.isFirst);
       },
       
       body: Builder(builder: (context) {
@@ -53,41 +53,43 @@ class PublishStep3Page extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.neutral100),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 140,
-                    decoration: const BoxDecoration(
-                      color: AppColors.c100,
-                      borderRadius: BorderRadius.vertical(
+            SizedBox(
+              height: 140,
+              child: controller.fotos.isEmpty
+                  ? Container(
+                      decoration: const BoxDecoration(
+                        color: AppColors.c100,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(16),
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.image_outlined, color: AppColors.c400, size: 40),
+                          SizedBox(height: 6),
+                          Text(
+                            'Sem fotos',
+                            style: TextStyle(color: AppColors.c600, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    )
+                  : ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(16),
                       ),
-                    ),
-                    alignment: Alignment.center,
-                    child: const Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.image_outlined,
-                            color: AppColors.c400, size: 40),
-                        SizedBox(height: 6),
-                        Text(
-                          'Fotos do anúncio',
-                          style: TextStyle(
-                            color: AppColors.c600,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      child: PageView.builder(
+                        itemCount: controller.fotos.length,
+                        itemBuilder: (_, i) => Image.file(
+                          File(controller.fotos[i].path),
+                          fit: BoxFit.cover,
+                          width: double.infinity,
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+            ),
 
                   Padding(
                     padding: const EdgeInsets.all(14),
@@ -166,9 +168,6 @@ class PublishStep3Page extends StatelessWidget {
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
 
             const SizedBox(height: 14),
 
@@ -240,7 +239,7 @@ class PublishStep3Page extends StatelessWidget {
 
 class _SummaryRow extends StatelessWidget {
   final String k, v;
-  const _SummaryRow(this.k, this.v, {super.key});
+  const _SummaryRow(this.k, this.v);
 
   @override
   Widget build(BuildContext context) {

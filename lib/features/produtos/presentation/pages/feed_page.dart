@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:replaykids/core/injector/injector.dart';
@@ -209,19 +210,25 @@ class _AnuncioCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Container(
-              decoration: const BoxDecoration(
-                color: AppColors.c100,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(16),
-                ),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
               ),
-              alignment: Alignment.center,
-              child: const Icon(
-                Icons.image_outlined,
-                color: AppColors.c400,
-                size: 36,
-              ),
+              child: anuncio.fotos.isEmpty
+                  ? Container(
+                      color: AppColors.c100,
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        Icons.image_outlined,
+                        color: AppColors.c400,
+                        size: 36,
+                      ),
+                    )
+                  : Image.file(
+                      File(anuncio.fotos.first),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
             ),
           ),
 
