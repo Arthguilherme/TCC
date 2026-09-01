@@ -1,7 +1,7 @@
 import '../../domain/entities/usuario_entity.dart';
 
 class UsuarioModel extends UsuarioEntity {
-  const UsuarioModel({
+  UsuarioModel({
     super.id,
     required super.nome,
     required super.email,
@@ -10,6 +10,29 @@ class UsuarioModel extends UsuarioEntity {
     super.cidade,
   });
 
+  // Para o SQLite (Map do banco)
+  factory UsuarioModel.fromMap(Map<String, dynamic> map) {
+    return UsuarioModel(
+      id: map['id'] as int?,
+      nome: map['nome'] as String,
+      email: map['email'] as String,
+      senha: map['senha'] as String,
+      telefone: map['telefone'] as String?,
+      cidade: map['cidade'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'nome': nome,
+      'email': email,
+      'senha': senha,
+      'telefone': telefone,
+      'cidade': cidade,
+    };
+  }
+
+  // Para API REST (JSON)
   factory UsuarioModel.fromJson(Map<String, dynamic> json) {
     return UsuarioModel(
       id: json['id'],
