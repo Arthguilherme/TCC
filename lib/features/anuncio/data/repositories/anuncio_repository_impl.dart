@@ -1,19 +1,22 @@
-import '../../domain/entities/anuncio_entity.dart';
-import '../../domain/repositories/anuncio_repository.dart';
+import 'package:replaykids/features/anuncio/data/datasources/anuncio_datasource.dart';
+import 'package:replaykids/features/anuncio/data/models/anuncio_model.dart';
+import 'package:replaykids/features/anuncio/domain/entities/anuncio_entity.dart';
+import 'package:replaykids/features/anuncio/domain/repositories/anuncio_repository.dart';
 
 class AnuncioRepositoryImpl implements AnuncioRepository {
-  final List<AnuncioEntity> _anuncios = [];
-  int _nextId = 1;
+  final AnuncioDatasource datasource;
+  
+  AnuncioRepositoryImpl({required this.datasource});
+  
+  @override
+  Future<List<AnuncioEntity>> listar() async {
+    return await datasource.listar();
+  }
 
   @override
-  List<AnuncioEntity> listar() => List.unmodifiable(_anuncios);
-
-  @override
-  void publicar(AnuncioEntity anuncio) {
-    _anuncios.insert(
-      0, 
-      AnuncioEntity(
-        id: _nextId++,
+  Future <void> publicar(AnuncioEntity anuncio) async {
+   final model = AnuncioModel(
+        id: anuncio.id,
         titulo: anuncio.titulo,
         descricao: anuncio.descricao,
         condicao: anuncio.condicao,
@@ -22,7 +25,7 @@ class AnuncioRepositoryImpl implements AnuncioRepository {
         isVenda: anuncio.isVenda,
         preco: anuncio.preco,
         fotos: anuncio.fotos,
-      ),
-    );
+      );
+      await datasource.publicar(model);
   }
 }

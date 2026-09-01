@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:replaykids/features/anuncio/presentation/pages/publish_step1_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:replaykids/core/injector/injector.dart';
@@ -17,16 +18,27 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   final _repository = injector.get<AnuncioRepository>();
   String _categoriaSelecionada = 'Todos';
+  List<AnuncioEntity> _anuncios = [];
 
   final _categorias = [
     'Todos', 'Brinquedos', 'Roupas', 'Carrinhos',
     'Móveis', 'Livros', 'Calçados', 'Acessórios', 'Outros',
   ];
 
+  @override
+    void initState() {
+      super.initState();
+      _carregarAnuncios();
+    }
+
+    Future<void> _carregarAnuncios() async {
+      final anuncios = await _repository.listar();
+      setState(() => _anuncios = anuncios);
+    }
+
   List<AnuncioEntity> get _anunciosFiltrados {
-    final todos = _repository.listar();
-    if (_categoriaSelecionada == 'Todos') return todos;
-    return todos.where((a) => a.categoria == _categoriaSelecionada).toList();
+    if (_categoriaSelecionada == 'Todos') return _anuncios;
+    return _anuncios.where((a) => a.categoria == _categoriaSelecionada).toList();
   }
 
   @override
@@ -179,8 +191,10 @@ class _FeedPageState extends State<FeedPage> {
 
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          await context.push(AppRouter.publicar);
-          setState(() {}); 
+          await Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const PublishStep1Page()),
+          );
+          _carregarAnuncios(); 
         },
         backgroundColor: AppColors.c500,
         foregroundColor: Colors.white,

@@ -1,6 +1,6 @@
 import '../entities/anuncio_entity.dart';
 
 abstract class AnuncioRepository {
-  List<AnuncioEntity> listar();
-  void publicar(AnuncioEntity anuncio);
+  Future<List<AnuncioEntity>> listar();
+  Future<void> publicar(AnuncioEntity anuncio);
 }

@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'core/injector/injector.dart';
 import 'core/routes/app_router.dart';
 import 'core/theme/app_colors.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://obptbvkmfgohansfvcap.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9icHRidmttZmdvaGFuc2Z2Y2FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0OTQ1NTIsImV4cCI6MjEwMzA3MDU1Mn0.Si0tN3or-p3CtJEb1XDSMe8hQ2_4fOlSXeekmx2mAJw',
+  );
+
   setupInjector();
   runApp(const ReplayKidsApp());
 }

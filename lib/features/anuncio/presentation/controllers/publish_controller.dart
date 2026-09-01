@@ -36,8 +36,8 @@ void removerFoto(int index) {
   fotos = [...fotos]..removeAt(index);
 }
 
-  void publicar() {
-    repository.publicar(
+  Future<void> publicar() async {
+    await repository.publicar(
       AnuncioEntity(
         id: 0, 
         titulo: titulo.isEmpty ? 'Sem título' : titulo,

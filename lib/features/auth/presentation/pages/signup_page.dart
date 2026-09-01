@@ -1,8 +1,10 @@
-import 'package:go_router/go_router.dart';
-import '../../../../core/routes/app_router.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/labeled_field.dart';
+import 'package:go_router/go_router.dart';
+import 'package:replaykids/core/injector/injector.dart';
+import 'package:replaykids/core/routes/app_router.dart';
+import 'package:replaykids/core/theme/app_colors.dart';
+import 'package:replaykids/core/widgets/labeled_field.dart';
+import 'package:replaykids/features/auth/presentation/controllers/signup_controller.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -16,6 +18,7 @@ class _SignupPageState extends State<SignupPage> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
   final _telefoneController = TextEditingController();
+  final _controller = injector.get<SignupController>();
 
   String _cidadeSelecionada = 'Matinhos, PR';
   bool _aceitouTermos = false;
@@ -39,8 +42,41 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
+  Future<void> _handleCadastro() async {
+    if (!_aceitouTermos) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Aceite os termos para continuar')),
+      );
+      return;
+    }
+
+    await _controller.cadastrar(
+      nome: _nomeController.text.trim(),
+      email: _emailController.text.trim(),
+      senha: _senhaController.text,
+      telefone: _telefoneController.text.trim(),
+      cidade: _cidadeSelecionada,
+    );
+
+    if (!mounted) return;
+
+    if (_controller.status == SignupStatus.sucesso) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Conta criada com sucesso!'),
+          backgroundColor: AppColors.c600,
+        ),
+      );
+      context.go(AppRouter.login);
+    } else {
+      setState(() {}); // atualiza a mensagem de erro
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final carregando = _controller.status == SignupStatus.carregando;
+
     return Scaffold(
       backgroundColor: AppColors.c50,
       body: SafeArea(
@@ -49,6 +85,7 @@ class _SignupPageState extends State<SignupPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Botão voltar
               InkWell(
                 onTap: () => context.go(AppRouter.login),
                 borderRadius: BorderRadius.circular(20),
@@ -59,25 +96,28 @@ class _SignupPageState extends State<SignupPage> {
                     color: AppColors.c100,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.arrow_back, size: 18, color: AppColors.c800),
+                  child: const Icon(Icons.arrow_back,
+                      size: 18, color: AppColors.c800),
                 ),
               ),
               const SizedBox(height: 16),
 
               const Text(
                 'Criar conta',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                style:
+                    TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 4),
               const Text(
                 'Leva menos de um minuto.',
-                style: TextStyle(color: AppColors.neutral600, fontSize: 13),
+                style:
+                    TextStyle(color: AppColors.neutral600, fontSize: 13),
               ),
               const SizedBox(height: 22),
 
               LabeledField(
                 label: 'Nome completo',
-                hint: 'Escreva seu Nome aqui',
+                hint: 'Ana Oliveira',
                 icon: Icons.person_outline,
                 controller: _nomeController,
               ),
@@ -85,7 +125,7 @@ class _SignupPageState extends State<SignupPage> {
 
               LabeledField(
                 label: 'E-mail',
-                hint: 'Seu@email.com',
+                hint: 'ana@email.com',
                 icon: Icons.mail_outline,
                 controller: _emailController,
                 keyboard: TextInputType.emailAddress,
@@ -101,6 +141,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
               const SizedBox(height: 10),
 
+              // Dropdown de cidade
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -121,22 +162,25 @@ class _SignupPageState extends State<SignupPage> {
                           size: 18, color: AppColors.neutral400),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(color: AppColors.neutral200),
+                        borderSide:
+                            const BorderSide(color: AppColors.neutral200),
                       ),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: _cidadeSelecionada,
                         isExpanded: true,
-                        icon: const Icon(Icons.expand_more, color: AppColors.neutral400),
+                        icon: const Icon(Icons.expand_more,
+                            color: AppColors.neutral400),
                         items: _cidades
                             .map((c) => DropdownMenuItem(
                                   value: c,
-                                  child: Text(c, style: const TextStyle(fontSize: 13)),
+                                  child: Text(c,
+                                      style: const TextStyle(fontSize: 13)),
                                 ))
                             .toList(),
                         onChanged: (v) {
@@ -160,65 +204,64 @@ class _SignupPageState extends State<SignupPage> {
               ),
               const SizedBox(height: 14),
 
+              // Checkbox de termos
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _aceitouTermos = !_aceitouTermos;
-                      });
-                    },
+                    onTap: () =>
+                        setState(() => _aceitouTermos = !_aceitouTermos),
                     child: Container(
                       width: 20,
                       height: 20,
                       margin: const EdgeInsets.only(top: 2),
                       decoration: BoxDecoration(
-                        color: _aceitouTermos ? AppColors.c500 : Colors.white,
+                        color: _aceitouTermos
+                            ? AppColors.c500
+                            : Colors.white,
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(
-                          color: _aceitouTermos ? AppColors.c500 : AppColors.neutral300,
+                          color: _aceitouTermos
+                              ? AppColors.c500
+                              : AppColors.neutral300,
                         ),
                       ),
                       alignment: Alignment.center,
                       child: _aceitouTermos
-                          ? const Icon(Icons.check, size: 14, color: Colors.white)
+                          ? const Icon(Icons.check,
+                              size: 14, color: Colors.white)
                           : null,
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _aceitouTermos = !_aceitouTermos;
-                        });
-                      },
-                      child: const Text.rich(
-                        TextSpan(
-                          style: TextStyle(fontSize: 11, color: AppColors.neutral600, height: 1.4),
-                          children: [
-                            TextSpan(text: 'Li e aceito os '),
-                            TextSpan(
-                              text: 'Termos de Uso',
-                              style: TextStyle(
-                                color: AppColors.c700,
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.underline,
-                              ),
+                  const Expanded(
+                    child: Text.rich(
+                      TextSpan(
+                        style: TextStyle(
+                            fontSize: 11,
+                            color: AppColors.neutral600,
+                            height: 1.4),
+                        children: [
+                          TextSpan(text: 'Li e aceito os '),
+                          TextSpan(
+                            text: 'Termos de Uso',
+                            style: TextStyle(
+                              color: AppColors.c700,
+                              fontWeight: FontWeight.w700,
+                              decoration: TextDecoration.underline,
                             ),
-                            TextSpan(text: ' e a '),
-                            TextSpan(
-                              text: 'Política de Privacidade',
-                              style: TextStyle(
-                                color: AppColors.c700,
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.underline,
-                              ),
+                          ),
+                          TextSpan(text: ' e a '),
+                          TextSpan(
+                            text: 'Política de Privacidade',
+                            style: TextStyle(
+                              color: AppColors.c700,
+                              fontWeight: FontWeight.w700,
+                              decoration: TextDecoration.underline,
                             ),
-                            TextSpan(text: '.'),
-                          ],
-                        ),
+                          ),
+                          TextSpan(text: '.'),
+                        ],
                       ),
                     ),
                   ),
@@ -226,18 +269,22 @@ class _SignupPageState extends State<SignupPage> {
               ),
               const SizedBox(height: 18),
 
+              // Mensagem de erro
+              if (_controller.mensagemErro != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    _controller.mensagemErro!,
+                    style: const TextStyle(color: Colors.red, fontSize: 12),
+                  ),
+                ),
+
+              // Botão criar conta
               SizedBox(
                 height: 48,
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    debugPrint('Nome: ${_nomeController.text}');
-                    debugPrint('Email: ${_emailController.text}');
-                    debugPrint('Senha: ${_senhaController.text}');
-                    debugPrint('Telefone: ${_telefoneController.text}');
-                    debugPrint('Cidade: $_cidadeSelecionada');
-                    debugPrint('Aceitou termos: $_aceitouTermos');
-                  },
+                  onPressed: carregando ? null : _handleCadastro,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.c500,
                     foregroundColor: Colors.white,
@@ -246,10 +293,19 @@ class _SignupPageState extends State<SignupPage> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text(
-                    'Criar conta',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
+                  child: carregando
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Criar conta',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
                 ),
               ),
             ],
